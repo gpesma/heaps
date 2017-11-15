@@ -47,6 +47,7 @@ public class QuakeNode {
 			result = prime * result + data;
 			return result;
 		}
+		
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)

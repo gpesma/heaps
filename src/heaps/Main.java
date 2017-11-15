@@ -5,7 +5,21 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		FibHeap f = new FibHeap();
+		QuakeNode q1 = new QuakeNode(1);
+		QuakeNode q2 = new QuakeNode(2);
+		QuakeNode q3 = new QuakeNode(3);
+		QuakeNode q4 = new QuakeNode(4);
+		
+		
+		TTree t1 = new TTree(q1);
+		TTree t2 = new TTree(q2);
+		t1.link(q1, q2); 
+		
+		
+		
+		
+		
+		/*FibHeap f = new FibHeap();
 		f.insert(1);
 		f.insert(2);
 		f.insert(3);

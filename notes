@@ -1,0 +1,7 @@
+vnames
+
+make private
+
+QuakeHeap: duplicate nodes per level
+
+BinomialHeap: hashMap instead of list

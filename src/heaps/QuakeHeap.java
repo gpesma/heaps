@@ -3,23 +3,49 @@ package heaps;
 import java.util.*;
 
 public class QuakeHeap {
-	LinkedList<QuakeNode> heap = new LinkedList<QuakeNode>();
+	
+	LinkedList<TTree> heap = new LinkedList<TTree>();
 	QuakeNode min;
+	List<Integer> nodesPerLevel = new ArrayList<Integer>();
+	
 	
 	public void insert(int n) {
-		QuakeNode qN  = new QuakeNode(n);
+		TTree tree = new TTree(n);
+		QuakeNode qN = tree.getRoot();
 		if( heap.size() == 0)
 			min = qN;
 		if(min.getData() > qN.getData())
 			min= qN;
-		heap.add(qN);
+		heap.add(tree);
 	}
 	
 	public int getMin() {
 		return min.getData();
 	}
 	
-	private QuakeNode link(QuakeNode q1, QuakeNode q2) {
+	public void union() {
+		
+	}
+	
+	public void delete(QuakeNode q) {
+		QuakeNode temp = q;
+		QuakeNode tempChild = q.getParent();
+		while(temp.getParent() != null && temp.equals(q)) {
+			cut(temp);
+			temp = tempChild;
+			tempChild = temp.equals(temp.getLeft()) ? temp.getLeft() : temp.getRight();
+		}
+	}
+	
+	public void decreaseKey() {
+		;
+	}
+	
+	public void extractMin() {
+		;
+	}
+	
+	/*private QuakeNode link(QuakeNode q1, QuakeNode q2) {
 		QuakeNode temp1, temp2;
 		temp2 = q2;
 		temp1 = q1;
@@ -67,21 +93,17 @@ public class QuakeHeap {
 		cut(q.getHighestClone());
 	}
 	
-	public void delete(QuakeNode q) {
-		QuakeNode temp = q;
-		QuakeNode tempChild = q.getParent();
-		while(temp.getParent() != null && temp.equals(q)) {
-			cut(temp);
-			temp = tempChild;
-			tempChild = temp.equals(temp.getLeft()) ? temp.getLeft() : temp.getRight();
-			
-		}
-	}
-	
-	
 	public void cut(QuakeNode q) {
-
 		QuakeNode temp;
+		if(q.getDegree() == 1) {
+			temp = q.getParent();
+			if(temp.getLeft().equals(q))
+				temp.setLeft(null);
+			else
+				temp.setRight(null);
+			return;
+		}
+		
 		if(q.getLeft() != null && q.getLeft().getData() == q.getData()) {
 			temp = q.getRight();
 			q.setRight(null);
@@ -91,6 +113,6 @@ public class QuakeHeap {
 		}
 		temp.setParent(null);
 		if(temp!=null) heap.add(temp);
-	}
+	}*/
 		
 }

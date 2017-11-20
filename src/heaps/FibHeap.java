@@ -10,7 +10,7 @@ public class FibHeap {
 	
 	private FibNode min;
 	
-	HashMap<Integer, FibNode> map = new HashMap<Integer, FibNode>();
+	HashMap<Integer, FibNode> treeSizes = new HashMap<Integer, FibNode>();
 	
 	FibHeap(){
 		min = null;
@@ -23,7 +23,7 @@ public class FibHeap {
 		if(min.getData() > fN.getData())
 			min= fN;
 		heap.add(fN);
-		map.put(n,fN);
+		treeSizes.put(n,fN);
 	}
 	
 	public void insertNode(FibNode fN) {
@@ -55,6 +55,7 @@ public class FibHeap {
 				int tempDegree = heap.get(i).getDegree();
 				FibNode sameDegreeTree = rootList.get(tempDegree);
 				FibNode newTree = mergeEqualTrees(heap.get(i), sameDegreeTree);
+				//order of next 2 lines
 				heap.set(i,newTree);
 				i = heap.indexOf(sameDegreeTree) > i ? i : i-1;
 				heap.remove(sameDegreeTree);

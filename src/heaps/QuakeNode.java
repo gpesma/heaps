@@ -2,9 +2,17 @@ package heaps;
 
 public class QuakeNode {
 
-		int degree, data, nodesInLevel;
+		int degree, data;
 		QuakeNode left, right, clone, highestClone, parent;
+		TTree tree;
+		boolean mark;
 		
+		public TTree getTree() {
+			return tree;
+		}
+		public void setTree(TTree tree) {
+			this.tree = tree;
+		}
 		public QuakeNode getParent() {
 			return parent;
 		}
@@ -33,12 +41,18 @@ public class QuakeNode {
 			super();
 			this.data = data;
 			this.degree = 1;
+			this.highestClone = this;
+			this.clone = this;
+			this.mark = false;
+		}
+		public boolean isMark() {
+			return mark;
+		}
+		public void setMark(boolean mark) {
+			this.mark = mark;
 		}
 		public QuakeNode getRight() {
 			return right;
-		}
-		public int getNodesInLevel() {
-			return nodesInLevel;
 		}
 		@Override
 		public int hashCode() {
@@ -47,7 +61,7 @@ public class QuakeNode {
 			result = prime * result + data;
 			return result;
 		}
-		
+	
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -61,9 +75,7 @@ public class QuakeNode {
 				return false;
 			return true;
 		}
-		public void setNodesInLevel(int nodesInLevel) {
-			this.nodesInLevel = nodesInLevel;
-		}
+		
 		public QuakeNode getHighestClone() {
 			return highestClone;
 		}

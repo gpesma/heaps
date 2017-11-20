@@ -7,10 +7,11 @@ public class TTree {
 	
 	QuakeNode root;
 	
-	List<Integer> nodesPerLevel = new ArrayList<Integer>();
+	int height;
 	
 	public void setRoot(QuakeNode root) {
 		this.root = root;
+		this.height = root.getDegree();
 	}
 
 	public QuakeNode getRoot() {
@@ -19,27 +20,13 @@ public class TTree {
 
 	public TTree link(TTree tree) {
 		if(this.getHeight() > tree.getHeight()) 
-			tree = fixHeight(tree, this.getHeight());
+			tree = tree.fixHeight(this.getHeight());
 		 else if(this.getHeight() < tree.getHeight()) 
-			fixHeight(this, tree.getHeight());
+			this.fixHeight(tree.getHeight());
 		
 		mergeTrees(tree);
 		
 		return this;
-	}
-	
-	private void incrementNodesInLevelLastOfRoot() {
-		this.root.setNodesInLevel(this.root.getNodesInLevel() + 1);
-	}
-	
-	private int getNodesAtLevel(int n) {
-		return this.nodesPerLevel.get(n);
-	}
-
-	private void updateNodesPerLevelMerge(TTree tree) {
-		for(int i = 0; i < this.getHeight(); ++i) {
-			this.nodesPerLevel.set(i, this.getNodesAtLevel(i) + tree.getNodesAtLevel(i));
-		}
 	}
 	
 	private void mergeTrees(TTree tree) {
@@ -51,61 +38,57 @@ public class TTree {
 			q.setRight(tree.getRoot());
 			this.root.setParent(q);
 			tree.getRoot().setParent(q);
-			q.setClone(this.root);
-			this.root.getHighestClone().setHighestClone(q);
-			this.updateNodesPerLevelMerge(tree);
-			this.incrementNodesInLevelLastOfRoot();
+			q.setClone(this.root.getClone());
+			this.root.getClone().setHighestClone(q);
 			q.setDegree(this.root.getDegree() + 1);
 			this.root = q;
+			this.height = q.getDegree();
 		} else {
 			QuakeNode q = new QuakeNode(treeData);
 			q.setLeft(tree.getRoot());
 			q.setRight(this.root);
 			this.root.setParent(q);
 			tree.getRoot().setParent(q);
-			q.setClone(tree.getRoot());
-			tree.getRoot().getHighestClone().setHighestClone(q);
-			this.updateNodesPerLevelMerge(tree);
-			tree.incrementNodesInLevelLastOfRoot();
+			q.setClone(tree.getRoot().getClone());
+			tree.getRoot().getClone().setHighestClone(q);
 			q.setDegree(this.root.getDegree() + 1);
 			this.root = q;
+			this.height = q.getDegree();
 		}
 	}
 
 	public int getHeight() {
-		return nodesPerLevel.size();
+		return this.height;
 	}
 	
 	public TTree(QuakeNode root) {
 		super();
 		this.root = root;
-		this.nodesPerLevel.add(1);
+		this.height = root.getDegree();
 	}
 	
 	public TTree(int n) {
 		QuakeNode node = new QuakeNode(n);
 		this.root = node;
-		nodesPerLevel.set(0, 1);
+		this.height = 1;
 	}
 
-	private TTree fixHeight(TTree tree, int n) {
+	private TTree fixHeight(int n) {
 		
-		while(tree.getHeight() < n) {
-			QuakeNode q = new QuakeNode(tree.getRoot().getData());
-			QuakeNode treeRoot =  tree.getRoot();
+		while(this.getHeight() < n) {
+			QuakeNode q = new QuakeNode(this.getRoot().getData());
+			QuakeNode treeRoot =  this.getRoot();
 			treeRoot.setParent(q);
-			q.setLeft(root);
-			q.setDegree(tree.getHeight() + 1);
-			tree.nodesPerLevel.set(tree.getHeight() - 1, 1);
+			q.setLeft(this.root);
+			q.setDegree(this.getHeight() + 1);
 			q.setClone(treeRoot.clone);
-			treeRoot.getHighestClone().setHighestClone(q);
-			q.setNodesInLevel(1);
+			treeRoot.getClone().setHighestClone(q);
 			q.setDegree(treeRoot.getDegree() + 1);
-			tree.setRoot(q);
+			this.setRoot(q);
 		}
-		return tree;		
+		return this;		
 	}
-	/*
+	
 	public TTree cut(QuakeNode q) {
 		
 		QuakeNode topClone = q.getHighestClone();
@@ -115,17 +98,12 @@ public class TTree {
 				parent.setLeft(null);
 			else
 				parent.setRight(null);
-		}
-		topClone.setParent(null);
-		topClone.setNodesInLevel(1);
-		
+			topClone.setParent(null);
+			return new TTree(topClone);
+		} else 
+			return this;
 		
 	}
 	
-	public void updateNodesPerLevelCut(TTree tree) {
-		if(this.root == null)
-			return;
-		this.root.setNodesInLevel();
-	}*/
-	
+
 }

@@ -4,63 +4,36 @@ import java.util.*;
 public class Main {
 
 	public static void main(String[] args) {
-		
+
 		QuakeNode q1 = new QuakeNode(1);
 		QuakeNode q2 = new QuakeNode(2);
 		QuakeNode q3 = new QuakeNode(3);
 		QuakeNode q4 = new QuakeNode(4);
+		QuakeNode q5 = new QuakeNode(5);
+		QuakeNode q6 = new QuakeNode(6);
+		QuakeNode q7 = new QuakeNode(7);
+		QuakeNode q8 = new QuakeNode(8);
 		
+		QuakeHeap h = new QuakeHeap(q1);
+
+		h.insert(q5);
+		h.insert(q6);
+		h.insert(q7);
+		h.insert(q8);
+		q1 = h.link(q1,q2); 
+		h.insert(q3);
+		q1 = h.link(q1, q3);
+		h.insert(q4);
+		q1 = h.link(q1,q4);
 		
-		TTree t1 = new TTree(q1);
-		TTree t2 = new TTree(q2);
-		t1.link(q1, q2); 
+		System.out.println(h.extraxtMin());
+		System.out.println(h.extraxtMin());
+		System.out.println(h.extraxtMin());
+		System.out.println(h.extraxtMin());
+		System.out.println(h.extraxtMin());
 		
-		
-		
-		
-		
-		/*FibHeap f = new FibHeap();
-		f.insert(1);
-		f.insert(2);
-		f.insert(3);
-		f.insert(4);
-		f.insert(5);
-		f.insert(6);
-		f.insert(7);
-		f.insert(8);
-		f.insert(9);
-		f.extractMin();
-		f.decreaseKey(f.map.get(8), -8);
-		f.decreaseKey(f.map.get(7), -7);
-		f.insert(10);
-		System.out.println(f.extractMin());
-		System.out.println(f.extractMin());
-		System.out.println(f.extractMin());
-		System.out.println(f.extractMin());
-		/*f.insert(1);
-		f.insert(2);
-		f.insert(3);
-		f.insert(4);
-		f.insert(5);
-		System.out.println(f.extractMin());
-		f.insert(6);
-		System.out.println(f.extractMin());
-		f.insert(7);
-		f.insert(8);
-		f.insert(9);
-		f.insert(10);
-		f.insert(11);
-		f.insert(12);
-		f.insert(13);
-		f.insert(14);
-		f.insert(15);
-		f.insert(16);
-		System.out.println(f.extractMin());
-		System.out.println(f.extractMin());
-		System.out.println(f.extractMin());
-		System.out.println(f.extractMin());
-		System.out.println(f.extractMin());*/
-		
+		int a = 7;
+		q1.setData(a);
 	}
 
 

@@ -50,6 +50,7 @@ class BinomialHeap {
 	}
 	
 	public BinomialHeap union(BinomialHeap heap1, BinomialHeap heap2) {
+		
 		if(heap1.heapSize() == 0) {
 			return heap2;
 		}else if(heap2.heapSize() == 0) {
@@ -127,18 +128,22 @@ class BinomialHeap {
 	}
 
 	public Integer removeMin() {
+		
 		BinomialHeap newBh = new BinomialHeap();
 		BinomialNode newMin = new BinomialNode(Integer.MAX_VALUE);
 		BinomialNode temp ;
+		
 		for(int i = 0; i < min.numberOfChildren(); ++i) {
 			temp = min.getChild(i);
 			newBh.insertNode(temp);
 			if(temp.getData() < newMin.getData())
 				newMin.setData(temp.getData()); 
 		}
+		
 		int resultMin = min.getData();
 		this.first = this.first.equals(this.min) ? nextTree(first) : first;
-		heap.remove(min);
+		this.heap.remove(min);
+		
 		if(newBh.heapSize() != 0) {
 			newBh.min = newMin;
 			newBh = union(newBh,this);
@@ -152,21 +157,25 @@ class BinomialHeap {
 	}
 	
 	public BinomialNode findMin() {
+		
 		if(heapSize() == 0)
 			return null;
 		
 		int min = Integer.MAX_VALUE;
 		int index = 0;
+		
 		for(int i = 0; i < heap.size();++i) {
 			if(heap.get(i).getData() < min) {
 				index = i;
 				min = heap.get(i).getData();
 			}
 		}
+		
 		return heap.get(index);
 	}
 
 	private BinomialNode mergeTreesOfEqualDegree(BinomialNode t1, BinomialNode t2) {
+		
 		if(t1.getData() < t2.getData()) {
 			t1.addChild(t2);
 			t1.degree++;
@@ -175,7 +184,7 @@ class BinomialHeap {
 			t2.addChild(t1);
 			t2.degree++;
 			return t2;
-		}
-			
+		}	
 	}
+	
 }

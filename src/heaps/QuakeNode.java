@@ -4,39 +4,40 @@ public class QuakeNode {
 
 		int degree, data;
 		QuakeNode left, right, clone, highestClone, parent;
-		TTree tree;
 		boolean mark;
 		
-		public TTree getTree() {
-			return tree;
-		}
-		public void setTree(TTree tree) {
-			this.tree = tree;
-		}
 		public QuakeNode getParent() {
 			return parent;
 		}
+		
 		public void setParent(QuakeNode parent) {
 			this.parent = parent;
 		}
+		
 		public int getDegree() {
 			return degree;
 		}
+		
 		public void setDegree(int degree) {
 			this.degree = degree;
 		}
+		
 		public int getData() {
 			return data;
 		}
+		
 		public void setData(int data) {
 			this.data = data;
 		}
+		
 		public QuakeNode getLeft() {
 			return left;
 		}
+		
 		public void setLeft(QuakeNode left) {
 			this.left = left;
 		}
+		
 		public QuakeNode(int data) {
 			super();
 			this.data = data;
@@ -45,15 +46,19 @@ public class QuakeNode {
 			this.clone = this;
 			this.mark = false;
 		}
+		
 		public boolean isMark() {
 			return mark;
 		}
+		
 		public void setMark(boolean mark) {
 			this.mark = mark;
 		}
+		
 		public QuakeNode getRight() {
 			return right;
 		}
+		
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -79,15 +84,19 @@ public class QuakeNode {
 		public QuakeNode getHighestClone() {
 			return highestClone;
 		}
+		
 		public void setHighestClone(QuakeNode highestClone) {
 			this.highestClone = highestClone;
 		}
+		
 		public void setRight(QuakeNode right) {
 			this.right = right;
 		}
+		
 		public QuakeNode getClone() {
 			return clone;
 		}
+		
 		public void setClone(QuakeNode clone) {
 			this.clone = clone;
 		}

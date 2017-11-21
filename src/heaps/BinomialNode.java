@@ -2,14 +2,17 @@ package heaps;
 import java.util.*;
 
 public class BinomialNode {
+	
 	private int data;
 	int degree;
 	List<BinomialNode> children = new ArrayList<BinomialNode>();
 	BinomialNode parent;
+	
 	BinomialNode(int n){
 		data = n;
 		degree = 1;
 	}
+	
 	int getData() {
 		return data;
 	}

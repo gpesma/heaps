@@ -1,11 +1,13 @@
 package heaps;
 import java.util.*;
+import javax.swing.JFrame;
 
 public class Main {
 
 	public static void main(String[] args) {
-
-		QuakeNode q1 = new QuakeNode(1);
+	
+		
+		/*QuakeNode q1 = new QuakeNode(1);
 		QuakeNode q2 = new QuakeNode(2);
 		QuakeNode q3 = new QuakeNode(3);
 		QuakeNode q4 = new QuakeNode(4);
@@ -33,7 +35,7 @@ public class Main {
 		System.out.println(h.extraxtMin());
 		
 		int a = 7;
-		q1.setData(a);
+		q1.setData(a);*/
 	}
 
 

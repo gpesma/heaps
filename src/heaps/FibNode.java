@@ -1,6 +1,7 @@
 package heaps;
 
 public class FibNode {
+	
 	int data, degree;
 	boolean mark;
 	FibNode left,right, child, parent;
@@ -79,6 +80,8 @@ public class FibNode {
 		this.data = data;
 	}
 
-	public int getData() { return data;}
+	public int getData() {
+		return data;
+	}
 	
 }

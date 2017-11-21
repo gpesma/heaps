@@ -15,9 +15,11 @@ public class BinaryHeap {
 	}
 	
 	private void heapify(int i) {
+		
 		int left = getLeft(i);
 		int right = getRight(i);
 		int small = i;
+		
 		if(left < heap.size() && heap.get(left) < heap.get(i))
 			small = left;
 		if(right < heap.size() && heap.get(right) < heap.get(i))
@@ -31,6 +33,7 @@ public class BinaryHeap {
 	}
 	
 	public Integer removeMin() {
+		
 		if(heap.size() <=0)
 			return Integer.MAX_VALUE;
 		if(heap.size() == 1)
@@ -43,7 +46,9 @@ public class BinaryHeap {
 	}
 
 	public void decreaseVal(int i, int n) {
+		
 		heap.set(i, n);
+		
 		while(i >= 0 && heap.get(getParent(i)) > heap.get(i)) {
 			swap(i, getParent(i));
 			i = getParent(i);
@@ -53,12 +58,13 @@ public class BinaryHeap {
 	public void delete(int n) {
 		decreaseVal(heap.indexOf(n),Integer.MIN_VALUE);
 		removeMin();
-		//heapify(0);
 	}
 
 	public void insert(int n) {
-		heap.add(n);
+		
+		this.heap.add(n);
 		int i = heap.size() - 1;
+		
 		while(i >= 0 && heap.get(getParent(i)) > heap.get(i)) {
 			swap(i, getParent(i));
 			i = getParent(i);

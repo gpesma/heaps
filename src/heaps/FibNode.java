@@ -1,8 +1,17 @@
 package heaps;
 
-public class FibNode {
+public class FibNode implements Node{
 	
 	int data, degree;
+	int id;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	boolean mark;
 	FibNode left,right, child, parent;
 	

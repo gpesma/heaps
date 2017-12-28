@@ -1,11 +1,21 @@
 package heaps;
 
-public class QuakeNode {
+public class QuakeNode implements Node{
 
-		int degree, data;
+		int degree, data, id;
 		QuakeNode left, right, clone, highestClone, parent;
 		boolean mark;
 		
+		
+		
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
 		public QuakeNode getParent() {
 			return parent;
 		}

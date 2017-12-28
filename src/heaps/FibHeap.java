@@ -3,39 +3,40 @@ package heaps;
 import java.util.*;
 
 //duplicates
-public class FibHeap {
+public class FibHeap implements Heap{
 
-	LinkedList<FibNode> heap = new LinkedList<FibNode>();
+	private LinkedList<FibNode> heap = new LinkedList<FibNode>();
 
 	private FibNode min;
 
-	HashMap<Integer, FibNode> treeSizes = new HashMap<Integer, FibNode>();
+	private HashMap<Integer, FibNode> treeSizes = new HashMap<Integer, FibNode>();
 
 	FibHeap() {
-		min = null;
+		this.min = null;
 	}
 
-	public void insert(int n) {
+	public FibNode insert(int n) {
 		
 		FibNode fN = new FibNode(n);
 		
 		if (heap.size() == 0)
-			min = fN;
+			this.min = fN;
 		if (min.getData() > fN.getData())
-			min = fN;
+			this.min = fN;
 		
 		this.heap.add(fN);
 		this.treeSizes.put(n, fN);
+		return fN;
 	}
 
-	public void insertNode(FibNode fN) {
-		
+	public void insertNode(Node f) {
+		FibNode fN = (FibNode) f;
 		if (heap.size() == 0)
-			min = fN;
+			this.min = fN;
 		if (min.getData() > fN.getData())
-			min = fN;
+			this.min = fN;
 		
-		heap.add(fN);
+		this.heap.add(fN);
 	}
 
 	public FibHeap union(FibHeap fh1, FibHeap fh2) {
@@ -46,7 +47,7 @@ public class FibHeap {
 
 	public int getMin() {
 		
-		return min.getData();
+		return this.min.getData();
 	}
 
 	private void fixSizes() {
@@ -63,17 +64,25 @@ public class FibHeap {
 				FibNode sameDegreeTree = rootList.get(tempDegree);
 				FibNode newTree = mergeEqualTrees(heap.get(i), sameDegreeTree);
 				// order of next 2 lines
-				heap.set(i, newTree);
+				this.heap.set(i, newTree);
 				i = heap.indexOf(sameDegreeTree) > i ? i : i - 1;
-				heap.remove(sameDegreeTree);
+				this.heap.remove(sameDegreeTree);
 				rootList.remove(tempDegree);
 			}
 		}
 	}
 
-	public Integer extractMin() {
-		FibNode temp = min.getChild();
+	public Node extractMin() {
+		
+		if(heap.size() == 1) {
+			Node n = min;
+			this.heap.remove(min);
+			return n;
+		}
 
+		
+		
+		FibNode temp = min.getChild();
 		while (temp != null) {
 			temp.setParent(null);
 			insertNode(temp);
@@ -81,7 +90,8 @@ public class FibHeap {
 			if (temp != null && temp.getLeft() != null)
 				temp.getLeft().setRight(null);
 		}
-		
+		System.out.println("remove min" + heap.size());
+		Node n = min;
 		int result = min.getData();
 		this.heap.remove(min);
 		int minValue = Integer.MAX_VALUE;
@@ -94,10 +104,10 @@ public class FibHeap {
 			}
 		}
 		
-		min = this.heap.get(index);
-		fixSizes();
+		this.min = this.heap.get(index);
+		this.fixSizes();
 
-		return result;
+		return n;
 	}
 
 	private FibNode mergeEqualTrees(FibNode f1, FibNode f2) {
@@ -123,7 +133,8 @@ public class FibHeap {
 		}
 	}
 
-	public void decreaseKey(FibNode fN, int n) {
+	public void decreaseKey(Node node, int n) {
+		FibNode fN = (FibNode) node;
 		if (this.heap.contains(fN))
 			return;
 		FibNode temp = fN.getParent();
@@ -132,7 +143,7 @@ public class FibHeap {
 			if (fN.getParent().getChild() == fN)
 				fN.getParent().setChild(fN.getRight());
 			fN.setParent(null);
-			updateDegrees(temp);
+			this.updateDegrees(temp);
 		}
 
 		if (fN.getLeft() != null && fN.getRight() != null) {
@@ -144,7 +155,7 @@ public class FibHeap {
 		else if (fN.getRight() != null)
 			fN.getRight().setLeft(null);
 
-		insertNode(fN);
+		this.insertNode(fN);
 		fN.setData(n);
 		fN.setMark(false);
 
@@ -153,7 +164,7 @@ public class FibHeap {
 		if (temp != null && !temp.isMark())
 			temp.setMark(true);
 		else if (temp != null && temp.isMark())
-			decreaseKey(temp, temp.getData());
+			this.decreaseKey(temp, temp.getData());
 
 	}
 
@@ -165,9 +176,13 @@ public class FibHeap {
 		}
 	}
 
-	private void delete(FibNode fn) {
-		decreaseKey(fn, Integer.MIN_VALUE);
-		extractMin();
+	public void delete(Node node) {
+		FibNode fn = (FibNode) node;
+		this.decreaseKey(fn, Integer.MIN_VALUE);
+		this.extractMin();
 	}
 
+	public boolean isEmpty() {
+		return this.heap.size() == 0;
+	}
 }

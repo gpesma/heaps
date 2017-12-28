@@ -2,7 +2,7 @@ package heaps;
 
 import java.util.*;
 
-public class QuakeHeap {
+public class QuakeHeap implements Heap{
 
 	private static final float a = (float) 0.75;
 	LinkedList<QuakeNode> heap = new LinkedList<QuakeNode>();
@@ -15,20 +15,31 @@ public class QuakeHeap {
 		System.out.println('\n');
 	}
 
+	public int getMin() {
+		return min.getData();
+	}
+	
 	public QuakeHeap(QuakeNode q) {
 		this.min = q;
 		this.heap.add(q);
 		this.rootList.add(1);
 	}
 
-	public void decreaseKey(QuakeNode q1, int newVal) {
+	public QuakeHeap() {
+		this.min = null;
+		this.rootList.add(0);
+	}
+	
+	
+	public void decreaseKey(Node node, int newVal) {
+		QuakeNode q1 = (QuakeNode) node;
 		q1.getClone().setData(newVal);
 		if (q1.getParent() != null)
 			cut(q1.getClone().getHighestClone());
 	}
 
-	public void delete(QuakeNode q) {
-		
+	public void delete(Node node) {
+		QuakeNode q = (QuakeNode) node;
 		QuakeNode temp = q.getHighestClone();
 		QuakeNode nextTemp = temp;
 		while (nextTemp != null) {
@@ -121,14 +132,25 @@ public class QuakeHeap {
 		quake(level, node.getRight());
 	}
 
-	public void insert(QuakeNode q) {
+	public void insertNode(Node n) {
+		QuakeNode q = (QuakeNode) n;
 		if (q != null) {
 			heap.add(q);
 			if (q.getData() < min.getData())
 				min = q;
 			this.rootList.set(0, this.rootList.get(0) + 1);
 		}
-
+	}
+	
+	public QuakeNode insert(int n) {
+		QuakeNode q = new QuakeNode(n);
+		if (q != null) {
+			heap.add(q);
+			if (this.min == null || q.getData() < this.min.getData())
+				this.min = q;
+			this.rootList.set(0, this.rootList.get(0) + 1);
+		}
+		return q;
 	}
 
 	public QuakeNode link(QuakeNode q1, QuakeNode q2) {
@@ -215,10 +237,11 @@ public class QuakeHeap {
 		return topClone;
 	}
 
-	public int extraxtMin() {
-		int minVal = min.getData();
+	public Node extractMin() {
+		Node minVal = min;
 		delete(min);
-		this.min = this.findMin();
+		if(!this.isEmpty())
+			this.min = this.findMin();
 		return minVal;
 	}
 
@@ -239,5 +262,9 @@ public class QuakeHeap {
 	public QuakeHeap union(QuakeHeap qHeap) {
 		this.heap.addAll(qHeap.heap);
 		return this;
+	}
+	
+	public boolean isEmpty() {
+		return this.heap.size() == 0;
 	}
 }

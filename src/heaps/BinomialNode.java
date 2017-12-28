@@ -1,23 +1,42 @@
 package heaps;
 import java.util.*;
 
-public class BinomialNode {
+public class BinomialNode implements Node{
 	
 	private int data;
-	int degree;
+	int degree, id;
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	List<BinomialNode> children = new ArrayList<BinomialNode>();
 	BinomialNode parent;
 	
+	
+	public BinomialNode getParent() {
+		return parent;
+	}
+
+	public void setParent(BinomialNode parent) {
+		this.parent = parent;
+	}
+
 	BinomialNode(int n){
 		data = n;
 		degree = 1;
+		parent = null;
 	}
 	
-	int getData() {
+	public int getData() {
 		return data;
 	}
 	
-	int getDegree() {
+	public int getDegree() {
 		return degree;
 	}
 	

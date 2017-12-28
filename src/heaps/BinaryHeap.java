@@ -41,13 +41,13 @@ public class BinaryHeap {
 		
 		swap(0,heap.size()-1);
 		int min = heap.remove(heap.size()-1);
-		heapify(0);
+		this.heapify(0);
 		return min;
 	}
 
 	public void decreaseVal(int i, int n) {
 		
-		heap.set(i, n);
+		this.heap.set(i, n);
 		
 		while(i >= 0 && heap.get(getParent(i)) > heap.get(i)) {
 			swap(i, getParent(i));
@@ -56,8 +56,8 @@ public class BinaryHeap {
 	}
 	
 	public void delete(int n) {
-		decreaseVal(heap.indexOf(n),Integer.MIN_VALUE);
-		removeMin();
+		this.decreaseVal(heap.indexOf(n),Integer.MIN_VALUE);
+		this.removeMin();
 	}
 
 	public void insert(int n) {
@@ -73,8 +73,8 @@ public class BinaryHeap {
 	
 	private void swap(int i1, int i2) {
 		int temp = heap.get(i1);
-		heap.set(i1,heap.get(i2));
-		heap.set(i2, temp);
+		this.heap.set(i1,heap.get(i2));
+		this.heap.set(i2, temp);
 	}
 	
 	private int getParent(int n) {

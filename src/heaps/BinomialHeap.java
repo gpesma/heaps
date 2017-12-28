@@ -1,10 +1,9 @@
 package heaps;
 import java.util.*;
 
-class BinomialHeap {
+class BinomialHeap implements Heap{
 	
-	//nodes
-	LinkedList<BinomialNode> heap = new LinkedList<BinomialNode>();
+	private LinkedList<BinomialNode> heap = new LinkedList<BinomialNode>();
 	
 	public BinomialNode first;
 	
@@ -106,16 +105,18 @@ class BinomialHeap {
 		return heap.size();
 	}
 		
-	public void insert(int n) {
+	public BinomialNode insert(int n) {
 		BinomialNode node = new BinomialNode(n);
 		BinomialHeap bh = new BinomialHeap(node);
 		bh = union(bh, this);
 		this.heap = bh.heap;
 		this.first = bh.first;
 		this.min = bh.min;
+		return node;
 	}
 	
-	public void insertNode(BinomialNode node) {
+	public void insertNode(Node n) {
+		BinomialNode node = (BinomialNode) n;
 		BinomialHeap bh = new BinomialHeap(node);
 		bh = union(bh, this);
 		this.first = bh.first;
@@ -123,11 +124,11 @@ class BinomialHeap {
 		this.heap = bh.heap;
 	}
 	
-	public BinomialNode getMin() {
-		return min;
+	public int getMin() {
+		return this.min.getData();
 	}
 
-	public Integer removeMin() {
+	public Node extractMin() {
 		
 		BinomialHeap newBh = new BinomialHeap();
 		BinomialNode newMin = new BinomialNode(Integer.MAX_VALUE);
@@ -135,12 +136,13 @@ class BinomialHeap {
 		
 		for(int i = 0; i < min.numberOfChildren(); ++i) {
 			temp = min.getChild(i);
+			temp.setParent(null);
 			newBh.insertNode(temp);
 			if(temp.getData() < newMin.getData())
 				newMin.setData(temp.getData()); 
 		}
 		
-		int resultMin = min.getData();
+		Node resultMin = this.min;
 		this.first = this.first.equals(this.min) ? nextTree(first) : first;
 		this.heap.remove(min);
 		
@@ -156,7 +158,7 @@ class BinomialHeap {
 		return resultMin;
 	}
 	
-	public BinomialNode findMin() {
+	private BinomialNode findMin() {
 		
 		if(heapSize() == 0)
 			return null;
@@ -179,12 +181,34 @@ class BinomialHeap {
 		if(t1.getData() < t2.getData()) {
 			t1.addChild(t2);
 			t1.degree++;
+			t2.setParent(t1);
 			return t1;
 		} else {
 			t2.addChild(t1);
 			t2.degree++;
+			t1.setParent(t2);
 			return t2;
 		}	
 	}
 	
+	public void delete(Node node) {
+		BinomialNode bN = (BinomialNode) node;
+		this.decreaseKey(bN, Integer.MIN_VALUE);
+		this.extractMin();
+	}
+	
+	public void decreaseKey(Node node, int val) {
+		BinomialNode bN = (BinomialNode) node;
+		bN.setData(val);
+		while(bN.getParent() != null && bN.getParent().getData() < bN.getData()) {
+			int temp = bN.getData();
+			bN.setData(bN.getParent().getData());
+			bN.getParent().setData(temp);
+			bN = bN.getParent();
+		}
+	}
+	
+	public boolean isEmpty() {
+		return this.heap.size() == 0;
+	}
 }

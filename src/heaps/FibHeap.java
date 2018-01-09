@@ -25,7 +25,7 @@ public class FibHeap implements Heap{
 			this.min = fN;
 		
 		this.heap.add(fN);
-		this.treeSizes.put(n, fN);
+		//this.treeSizes.put(n, fN);
 		return fN;
 	}
 
@@ -56,6 +56,10 @@ public class FibHeap implements Heap{
 		int i = 0;
 		
 		while (heap.size() > i) {
+			if(rootList.containsValue(heap.get(i))) {
+				i++;
+				continue;
+			}
 			if (!rootList.containsKey(heap.get(i).getDegree())) {
 				rootList.put(heap.get(i).getDegree(), heap.get(i));
 				i++;
@@ -73,24 +77,24 @@ public class FibHeap implements Heap{
 	}
 
 	public Node extractMin() {
-		
-		if(heap.size() == 1) {
-			Node n = min;
-			this.heap.remove(min);
-			return n;
-		}
 
-		
+		if(this.heap.size() == 0)
+			return null;
 		
 		FibNode temp = min.getChild();
+		FibNode rev = null;
+		//System.out.println("prin");
 		while (temp != null) {
 			temp.setParent(null);
 			insertNode(temp);
+			rev = temp;
 			temp = temp.getRight();
-			if (temp != null && temp.getLeft() != null)
+			if (temp != null && temp.getLeft() != null) {
 				temp.getLeft().setRight(null);
+			}
 		}
-		System.out.println("remove min" + heap.size());
+		//System.out.println("after");
+		
 		Node n = min;
 		int result = min.getData();
 		this.heap.remove(min);
@@ -103,8 +107,8 @@ public class FibHeap implements Heap{
 				minValue = this.heap.get(i).getData();
 			}
 		}
-		
-		this.min = this.heap.get(index);
+		//System.out.println("after loop");
+		this.min = this.heap.size() == 0 ? null : this.heap.get(index);
 		this.fixSizes();
 
 		return n;
@@ -134,27 +138,41 @@ public class FibHeap implements Heap{
 	}
 
 	public void decreaseKey(Node node, int n) {
+		//System.out.println(":arx dec");
 		FibNode fN = (FibNode) node;
-		if (this.heap.contains(fN))
-			return;
-		FibNode temp = fN.getParent();
 		
-		if (fN.getParent() != null) {
-			if (fN.getParent().getChild() == fN)
-				fN.getParent().setChild(fN.getRight());
-			fN.setParent(null);
-			this.updateDegrees(temp);
+		if(fN.getParent() == null) {
+			fN.setData(n);
+			if(this.min == null)
+				this.min = fN;
+			this.min = n < min.getData() ? fN : this.min;
+			return;
 		}
 
-		if (fN.getLeft() != null && fN.getRight() != null) {
-			temp = fN.getLeft();
-			fN.getLeft().setRight(fN.getRight());
-			fN.getRight().setLeft(temp);
-		} else if (fN.getLeft() != null)
-			fN.getLeft().setRight(null);
-		else if (fN.getRight() != null)
-			fN.getRight().setLeft(null);
+		FibNode temp = fN.getParent();
+		
+		if (fN.getParent().getChild() == fN)
+			fN.getParent().setChild(fN.getRight());
+		fN.setParent(null);
+		//updateDegrees(temp);
 
+
+		if (fN.getLeft() != null && fN.getRight() != null) {
+			fN.getLeft().setRight(fN.getRight());
+			fN.getRight().setLeft(fN.getLeft());
+		} else if (fN.getLeft() != null) 
+			fN.getLeft().setRight(null);
+		else if (fN.getRight() != null) {
+			fN.getRight().setLeft(null);
+			//fN.getRight().setChild(fN.getChild());
+		}
+		fN.setLeft(null);
+		fN.setRight(null);
+
+		//fN.setChild(null);
+		
+		fN.setDegree(getDegreeOfMaxChild(fN) + 1);;
+		
 		this.insertNode(fN);
 		fN.setData(n);
 		fN.setMark(false);
@@ -166,8 +184,20 @@ public class FibHeap implements Heap{
 		else if (temp != null && temp.isMark())
 			this.decreaseKey(temp, temp.getData());
 
+		System.out.println("telos dec");
+		
 	}
 
+	static private int getDegreeOfMaxChild(FibNode n) {
+		int max = 0;
+		n = n.getChild();
+		while(n !=null) {
+			max= max < n.getDegree() ? n.getDegree() : max;
+			n = n.getRight();
+		}
+		return max;
+	}
+	
 	private void updateDegrees(FibNode fb) {
 		if (fb.getChild() == null)
 			fb.setDegree(1);

@@ -39,30 +39,32 @@ public class QuakeHeap implements Heap{
 	}
 
 	public void delete(Node node) {
+		//print();
+		if(this.heap.isEmpty())
+			return;
+		
 		QuakeNode q = (QuakeNode) node;
 		QuakeNode temp = q.getHighestClone();
 		QuakeNode nextTemp = temp;
+		
 		while (nextTemp != null) {
 			if (nextTemp.getRight() != null) {
 				nextTemp.getRight().setParent(null);
 				heap.add(nextTemp.getRight());
 			}
+			this.rootList.set(nextTemp.getDegree() - 1, this.rootList.get(nextTemp.getDegree() - 1) - 1);
 			nextTemp = nextTemp.getLeft();
 		}
+		
+		boolean replaceMin = false;
+		if(q.equals(this.min))
+			replaceMin = true;
+		//if (this.heap.contains(q))
+		if(q.getHighestClone().getParent() == null)
+			this.heap.remove(q);
+		
+		this.min = this.findMin();
 
-		if (this.heap.contains(temp))
-			this.heap.remove(temp);
-
-		while (temp != null) {
-			this.rootList.set(temp.getDegree() - 1, this.rootList.get(temp.getDegree() - 1) - 1);
-			if (temp.getParent() != null) {
-				if (temp.getParent().getLeft().equals(temp))
-					temp.getParent().setLeft(null);
-				else
-					temp.getParent().setRight(null);
-			}
-			temp = temp.getLeft();
-		}
 		checkAlpha();
 		fixSizes();
 	}
@@ -73,26 +75,30 @@ public class QuakeHeap implements Heap{
 		int i = 0;
 		
 		while (this.heap.size() > i) {
+			if(treeSizes.containsValue(this.heap.get(i))) {
+				i++;
+				continue;
+			}
+				
 			if (!treeSizes.containsKey(this.heap.get(i).getDegree())) {
 				treeSizes.put(this.heap.get(i).getDegree(), this.heap.get(i));
 				i++;
 			} else {
 				int tempDegree = this.heap.get(i).getDegree();
 				QuakeNode sameDegreeTree = treeSizes.get(tempDegree);
-				if (this.heap.size() > i + 1) {
-					i = this.heap.indexOf(this.heap.get(i + 1)) != -1 ? this.heap.indexOf(this.heap.get(i + 1)) - 1 : i;
-				}
-
 				link(heap.get(i), sameDegreeTree);
+				if(i!=0)
+					i-=1;
+				
 				treeSizes.remove(tempDegree);
 			}
 		}
 	}
 
 	private void checkAlpha() {
-		
+		//System.out.println("alpha");
 		for (int i = 1; i < this.rootList.size() && rootList.get(i) != 0; ++i) {
-			if (rootList.get(i) / rootList.get(i - 1) > a) {
+			if (!this.isEmpty() && rootList.get(i) / rootList.get(i - 1) > a) {
 				int j = 0;
 				while (j < this.heap.size()) {
 					quake(i, heap.get(j));
@@ -105,8 +111,10 @@ public class QuakeHeap implements Heap{
 		}
 	}
 
+
+	
 	private void quake(int level, QuakeNode node) {
-		
+		//System.out.println("quake " + heap.size());
 		if (node == null || node.getDegree() < level + 1)
 			return;
 		if (node.getDegree() == level + 1) {
@@ -134,16 +142,18 @@ public class QuakeHeap implements Heap{
 
 	public void insertNode(Node n) {
 		QuakeNode q = (QuakeNode) n;
+		
 		if (q != null) {
 			heap.add(q);
-			if (q.getData() < min.getData())
-				min = q;
+			if (this.min == null || q.getData() < min.getData())
+				this.min = q;
 			this.rootList.set(0, this.rootList.get(0) + 1);
 		}
 	}
 	
 	public QuakeNode insert(int n) {
 		QuakeNode q = new QuakeNode(n);
+		q.setHighestClone(q);
 		if (q != null) {
 			heap.add(q);
 			if (this.min == null || q.getData() < this.min.getData())
@@ -238,6 +248,8 @@ public class QuakeHeap implements Heap{
 	}
 
 	public Node extractMin() {
+		if(this.min == null)
+			return null;
 		Node minVal = min;
 		delete(min);
 		if(!this.isEmpty())
@@ -246,6 +258,8 @@ public class QuakeHeap implements Heap{
 	}
 
 	private QuakeNode findMin() {
+		if(this.isEmpty())
+			return null;
 		
 		int minValue = Integer.MAX_VALUE;
 		QuakeNode newMin = heap.get(0);

@@ -22,6 +22,8 @@ class BinomialHeap implements Heap{
 	
 	public void replaceEqualTrees(BinomialNode leftTree, BinomialNode newTree) {
 		int index = heap.indexOf(leftTree);
+		if(index == -1)
+			return;
 		heap.set(index, newTree);
 		heap.remove(index+1);
 	}
@@ -51,63 +53,88 @@ class BinomialHeap implements Heap{
 	public BinomialHeap union(BinomialHeap heap1, BinomialHeap heap2) {
 		
 		if(heap1.heapSize() == 0) {
+			this.heap = heap2.heap;
+			this.first = heap2.first;
+			this.min = heap2.min;
 			return heap2;
 		}else if(heap2.heapSize() == 0) {
+			this.heap = heap1.heap;
+			this.first = heap1.first;
+			this.min = heap1.min;
 			return heap1;
 		}
-		
+		//System.out.println(heap2.heap.get(0));
 		BinomialNode heap1Tree = heap1.first;
 		BinomialNode heap2Tree = heap2.first;
-		BinomialHeap newBh = new BinomialHeap();
-
-		if(heap1Tree.getDegree() < heap2Tree.getDegree()) {
-			newBh.AddTreeEnd(heap1Tree);
-			heap1Tree = heap1.nextTree(heap1Tree);
-		} else {
-			newBh.AddTreeEnd(heap2Tree);
-			heap2Tree = heap2.nextTree(heap2Tree);
-		}
 		
-		for(int i = 0 ; i < heap1.heapSize() + heap2.heapSize() - 1; ++i) {
-			if(heap1Tree == null){
-				newBh.AddTreeEnd(heap2Tree);
-				heap2Tree = heap2.nextTree(heap2Tree);
-			}else if(heap2Tree == null) {
-				newBh.AddTreeEnd(heap1Tree);
-				heap1Tree = heap1.nextTree(heap1Tree);
-			}else if(heap1Tree.getDegree() < heap2Tree.getDegree()) {
-				newBh.AddTreeEnd(heap1Tree);
-				heap1Tree = heap1.nextTree(heap1Tree);
-			}else {
-				newBh.AddTreeEnd(heap2Tree);
-				heap2Tree = heap2.nextTree(heap2Tree);
+		List<BinomialNode> rootList1 = heap1.heap;
+		List<BinomialNode> rootList2 = heap2.heap;
+		HashMap<Integer, BinomialNode> sizes = new HashMap<Integer, BinomialNode>();
+		int index1 = 0;
+		int index2 = 0;
+		//System.out.println(rootList1.size() + rootList2.size());
+		for(int i = 0; i < rootList1.size() + rootList2.size(); ++i) {
+			
+			
+			if(rootList1.size() <= index1 && rootList2.size() <= index2) {
+				break;
+			} else if(rootList1.size() <= index1 ) {
+				BinomialNode node2 =(BinomialNode) rootList2.get(index2);
+				if(sizes.containsKey(node2.getDegree())) {
+					BinomialNode node1 = sizes.remove(node2.getDegree());
+					node2 = mergeTreesOfEqualDegree(node1,node2);
+					rootList2.add(node2);
+				} else
+					sizes.put(node2.getDegree(), node2);
+				
+				index2++;	
+			}else if(rootList2.size() <= index2) {
+				BinomialNode node1 =(BinomialNode) rootList1.get(index1);
+				if(sizes.containsKey(node1.getDegree())) {
+					BinomialNode node2 = sizes.remove(node1.getDegree());
+					node1 = mergeTreesOfEqualDegree(node1,node2);
+					rootList2.add(node1);
+				} else
+					sizes.put(node1.getDegree(), node1);
+				
+				index1++;	
+			}else{
+				BinomialNode node1 =(BinomialNode) rootList1.get(index1);
+				if(sizes.containsKey(node1.getDegree())) {
+					BinomialNode node2 = sizes.remove(node1.getDegree());
+					node1 = mergeTreesOfEqualDegree(node1,node2);
+					rootList2.add(node1);
+				} else
+					sizes.put(node1.getDegree(), node1);
+				
+				index1++;
 			}
 		}
+
+		this.heap.clear();
 		
-		BinomialNode temp = newBh.first;
-		while(temp  != null && newBh.nextTree(temp) != null) {
-			if(temp.getDegree() == newBh.nextTree(temp).getDegree()) {
-					if(!(newBh.nextNextTree(temp) != null && temp.getDegree() == newBh.nextNextTree(temp).getDegree())) {
-						BinomialNode mergedTrees = mergeTreesOfEqualDegree(temp, newBh.nextTree(temp));
-						newBh.replaceEqualTrees(temp,mergedTrees);
-					}
-					else
-						temp = newBh.nextTree(temp);
-			} else
-				temp = newBh.nextTree(temp);
-		}
-		newBh.min = newBh.findMin();
-		newBh.first =newBh.heap.get(0);
-		return newBh;
+	    Iterator it = sizes.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        this.heap.addLast((BinomialNode) pair.getValue());
+	    }
+		
+		
+		this.min = this.findMin();
+		if(min != null)
+			this.first = this.heap.get(0);
+		return this;
+		
 	}
 	
 	private int heapSize(){
-		return heap.size();
+		return this.heap.size();
 	}
 		
 	public BinomialNode insert(int n) {
 		BinomialNode node = new BinomialNode(n);
 		BinomialHeap bh = new BinomialHeap(node);
+		//bh.AddTreeEnd(node);
 		bh = union(bh, this);
 		this.heap = bh.heap;
 		this.first = bh.first;
@@ -130,30 +157,28 @@ class BinomialHeap implements Heap{
 
 	public Node extractMin() {
 		
-		BinomialHeap newBh = new BinomialHeap();
-		BinomialNode newMin = new BinomialNode(Integer.MAX_VALUE);
+		if(this.heapSize() == 0)
+			return null;
+		
+	//	BinomialHeap newBh = new BinomialHeap();
+		//BinomialNode newMin = this.findMin() == null ? new BinomialNode(Integer.MAX_VALUE) : this.findMin();
+		
 		BinomialNode temp ;
 		
 		for(int i = 0; i < min.numberOfChildren(); ++i) {
 			temp = min.getChild(i);
 			temp.setParent(null);
-			newBh.insertNode(temp);
-			if(temp.getData() < newMin.getData())
-				newMin.setData(temp.getData()); 
+			this.insertNode(temp);
+			//if(temp.getData() < newMin.getData())
+			//	newMin = temp;
 		}
-		
+				
 		Node resultMin = this.min;
-		this.first = this.first.equals(this.min) ? nextTree(first) : first;
+		//this.first = this.first.equals(this.min) ? nextTree(first) : first;
 		this.heap.remove(min);
 		
-		if(newBh.heapSize() != 0) {
-			newBh.min = newMin;
-			newBh = union(newBh,this);
-			this.first = newBh.first;
-			this.min = newBh.min;
-			this.heap = newBh.heap;
-		} else
-			this.min = findMin();
+	
+		this.min = findMin();
 		
 		return resultMin;
 	}

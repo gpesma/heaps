@@ -24,7 +24,7 @@ public class Djikstra {
 		String file = "out.opsahl-usairport";
 		BufferedReader br = null;
 	    String line = "";
-	    String cvsSplitBy = ",";
+	    String cvsSplitBy = " ";
 
 	    File f = new File(file);
         try {
@@ -35,7 +35,7 @@ public class Djikstra {
                 if(nodeExists(Integer.valueOf(args[0]))){
                 		//Vertex v = vertices.get(Integer.valueOf(args[0]));
                 		//Vertex v = vs.get(vs.indexOf(new Vertex(Integer.valueOf(args[0]))));
-                		//v.setNode(new FibNode(Integer.valueOf(args[1])));
+                		//v.setNode(new BinomialNode(Integer.valueOf(args[1])));
                 		
                 		Vertex v = findVertex(Integer.valueOf(args[0]));
                 		Edge e = new Edge(Integer.valueOf(args[1]), Integer.valueOf(args[2]) + 10);
@@ -45,8 +45,8 @@ public class Djikstra {
                 		Vertex v = new Vertex(Integer.valueOf(args[0]));
                 		Edge e = new Edge(Integer.valueOf(args[1]), Integer.valueOf(args[2]) + 10);
                 		v.addEdge(e);
-                		//v.setEdge(new Edge(Integer.valueOf(args[1]),new FibNode(Integer.valueOf(args[2]))));
-                		v.setNode(new FibNode(Integer.valueOf(args[0])));
+                		//v.setEdge(new Edge(Integer.valueOf(args[1]),new BinomialNode(Integer.valueOf(args[2]))));
+                		v.setNode(new BinomialNode(Integer.valueOf(args[0])));
                 		//vertices.put(Integer.valueOf(args[0]), v);
                 		vs.add(v);
                 }
@@ -107,7 +107,7 @@ public class Djikstra {
 	
 	public void shortestPath(Vertex vert, Heap h) {
 		
-		System.out.println(vert.getData());
+		
 		
 		vert.getNode().setId(vert.getData());
 		vert.getNode().setData(0);
@@ -124,13 +124,16 @@ public class Djikstra {
 		}
 		h.decreaseKey(vert.getNode(),0);
 
-		
+		int i = 0;
+		//System.out.println(h.isEmpty());
 		while(!h.isEmpty()) {
+			
 			Node minDist = h.extractMin();
 			List<Edge> neighbors = findNeighbors(minDist);
-			System.out.println();
+			//System.out.println(i++ + " " + neighbors.size());
 			//System.out.println(minDist + " " + neighbors.size());
 			for(Edge e: neighbors) {
+				
 				if(e.getNode() == null)
 					continue;
 				int alt = minDist.getData() + e.weight;
@@ -142,7 +145,7 @@ public class Djikstra {
 				
 			}
 			//System.out.println(minDist.getData());
-			System.out.println(minDist.getId() + " " + minDist.getData());
+			//System.out.println(minDist.getId() + " " + minDist.getData());
 		}
 	    System.out.println("done");
 	}
@@ -150,13 +153,14 @@ public class Djikstra {
 	private List<Edge> findNeighbors(Node n){
 		int id = n.getId();
 		int i = 0;
+		//System.out.println(vs.size());
 		while(i < vs.size() && vs.get(i).getData() != id)
 			i++;
 		
 		List<Edge> edges = vs.get(i).getEdges();
-		List<Node> nodeList = new ArrayList<Node>();
-		for(Edge e: edges)
-			nodeList.add(e.getNode());
+		//List<Node> nodeList = new ArrayList<Node>();
+		//for(Edge e: edges)
+		//	nodeList.add(e.getNode());
 		
 		return edges;
 	}
